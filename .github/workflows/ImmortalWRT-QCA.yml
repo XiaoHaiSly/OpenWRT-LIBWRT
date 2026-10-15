@@ -2,7 +2,7 @@
 # Copyright (C) 2026 VIKINGYFY
 
 #CI项目
-name: LIBWRT
+name: ImmortalWRT-QCA
 
 #CI计划
 on:
@@ -48,9 +48,9 @@ jobs:
       #默认主题
       WRT_THEME: argon
       #默认主机名
-      WRT_NAME: LibWrt
+      WRT_NAME: ImmortalWRT
       #默认WIFI名称
-      WRT_SSID: LibWrt
+      WRT_SSID: ImmortalWRT
       #默认WIFI密码
       WRT_WORD: 12345678
       #默认地址
