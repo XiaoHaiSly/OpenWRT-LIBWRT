@@ -38,7 +38,9 @@ config)
 	#平台配置 + 与固件一致的内核/设备参数 + 全部 kmod + 插件清单
 	cat "$CONF_DIR/$WRT_CONFIG.txt" > .config
 	grep -hE '^(# )?CONFIG_(KERNEL_|TARGET_|CCACHE|DEVEL|FEED_)' "$CONF_DIR/GENERAL.txt" >> .config || true
-	echo "CONFIG_ALL_KMODS=m" >> .config
+	#ALL_KMODS 是 bool 类型，只能 =y（=m 会被 kconfig 判为无效而忽略）
+	#=y 后所有 kmod 自动变成 =m，只编译不进固件
+	echo "CONFIG_ALL_KMODS=y" >> .config
 	if [ "$WRT_FEED_USER" = "true" ]; then normalize_packages >> .config; fi
 	;;
 
