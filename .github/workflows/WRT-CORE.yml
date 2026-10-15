@@ -200,7 +200,16 @@ jobs:
           cd ./wrt/
 
           #IGNORE_ERRORS=m：单个 =m 的插件/内核模块编译失败不影响固件
-          make -j$(nproc) IGNORE_ERRORS="m" || make -j1 V=s IGNORE_ERRORS="m"
+          make -j$(nproc) IGNORE_ERRORS="m" || {
+            #修复 backports-6.18 的 ath10k sdio 编译错误（napi_dev 已是指针，不应再取地址）
+            for F in build_dir/target-*/linux-*/mac80211-sdio/backports-*/drivers/net/wireless/ath/ath10k/sdio.c; do
+              if [ -f "$F" ]; then
+                sed -i 's/dev_set_threaded(&ar->napi_dev/dev_set_threaded(ar->napi_dev/' "$F"
+                echo "ath10k sdio fix applied: $F"
+              fi
+            done
+            make -j1 V=s IGNORE_ERRORS="m"
+          }
 
       - name: Record Kernel Vermagic
         run: |
