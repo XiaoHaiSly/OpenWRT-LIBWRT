@@ -4,7 +4,7 @@ set -eo pipefail
 
 # 填 Cloudflare Pages 域名，如 openwrt-feed.pages.dev
 # 留空时：固件不写软件源，不推送
-FEED_HOST="openwrt-feeds.pages.dev"
+FEED_HOST=""
 
 CONF_DIR="$GITHUB_WORKSPACE/Config"
 TOP="$PWD"
@@ -14,7 +14,7 @@ feed_ready() {
 	[ -n "$FEED_HOST" ]
 }
 
-#去掉 http(s):// 和结尾路径，只留域名
+#去掉 http(s):// 和结尾路径
 feed_host() {
 	local H=${FEED_HOST#http://}; H=${H#https://}; echo "${H%%/*}"
 }
