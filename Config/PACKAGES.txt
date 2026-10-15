@@ -1,24 +1,5 @@
-# 软件源插件清单：这里的包只编译，不进固件，最后推送到软件源
-# 写法（任选其一，可混用）：
-#   CONFIG_PACKAGE_包名=m   编译
-#   CONFIG_PACKAGE_包名=y   同样当作 m 处理（只编译不进固件）
-#   CONFIG_PACKAGE_包名=n   不编译
-#   包名                    简写，等于 CONFIG_PACKAGE_包名=m
-#   CONFIG_XXX=y            非插件选项，原样写入 .config，例如 CONFIG_NODEJS_26=y
-# 注意：依赖会自动跟着编译；某个包编译失败不会影响其它包。
-
-#科学插件
-CONFIG_PACKAGE_luci-app-openclash=m
-CONFIG_PACKAGE_luci-app-passwall=m
-CONFIG_PACKAGE_luci-app-passwall2=m
-CONFIG_PACKAGE_luci-app-homeproxy=m
-CONFIG_PACKAGE_luci-app-momo=m
-
 #增加插件
 CONFIG_PACKAGE_luci-app-oaf=m
 CONFIG_PACKAGE_luci-app-substore=m
 CONFIG_PACKAGE_luci-app-miaomiaowu=m
 CONFIG_PACKAGE_luci-app-netspeedtest=m
-
-#太重的包先注释，需要时再打开（qt6 / rust 类首次编译很慢）
-#CONFIG_PACKAGE_luci-app-qbittorrent=m
