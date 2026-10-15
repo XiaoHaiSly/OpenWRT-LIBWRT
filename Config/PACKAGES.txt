@@ -1,5 +1,6 @@
 #增加插件
 CONFIG_PACKAGE_luci-app-oaf=m
+CONFIG_PACKAGE_luci-app-homeproxy=m
 CONFIG_PACKAGE_luci-app-substore=n
 CONFIG_PACKAGE_luci-app-miaomiaowu=m
 CONFIG_PACKAGE_luci-app-netspeedtest=m
