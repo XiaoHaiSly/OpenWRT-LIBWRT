@@ -5,7 +5,6 @@ set -eo pipefail
 # 填 Cloudflare Pages 域名，如 openwrt-feed.pages.dev
 # 留空时：固件不写软件源，不推送
 FEED_HOST=""
-# ==========================================================================
 
 CONF_DIR="$GITHUB_WORKSPACE/Config"
 TOP="$PWD"
