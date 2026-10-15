@@ -14,7 +14,7 @@ feed_ready() {
 	[ -n "$FEED_HOST" ]
 }
 
-#去掉 http(s):// 和结尾路径
+#去掉 http(s):// 和结尾路径，只留域名
 feed_host() {
 	local H=${FEED_HOST#http://}; H=${H#https://}; echo "${H%%/*}"
 }
@@ -102,11 +102,11 @@ firmware)
 	ARCH=$(grep -oP '^CONFIG_TARGET_ARCH_PACKAGES="\K[^"]+' .config)
 	URL="https://$(feed_host)"
 	mkdir -p files/etc/apk/repositories.d
-	cat > files/etc/apk/repositories.d/customfeeds.list <<LIST
+	cat > files/etc/apk/repositories.d/extra-feeds.list <<LIST
 $URL/packages/$ARCH/packages.adb
 $URL/kmods/$WRT_SUBTARGET/packages.adb
 LIST
-	cat files/etc/apk/repositories.d/customfeeds.list
+	cat files/etc/apk/repositories.d/extra-feeds.list
 	;;
 
 project)
