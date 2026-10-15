@@ -96,7 +96,7 @@ PY
 	;;
 
 firmware)
-	feed_ready || { echo "FEED_HOST not set, skip writing feed into firmware"; exit 0; }
+	feed_ready || { echo "FEED_HOST not set in Scripts/Feed.sh, skip writing feed into firmware"; exit 0; }
 	ARCH=$(grep -oP '^CONFIG_TARGET_ARCH_PACKAGES="\K[^"]+' .config)
 	HOST=${FEED_HOST#http://}; HOST=${HOST#https://}; HOST=${HOST%%/*}
 	URL="https://$HOST"
