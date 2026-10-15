@@ -413,7 +413,7 @@ jobs:
           cd ./wrt/
 
           #IGNORE_ERRORS=m：单个插件编译失败不影响其它插件
-          make -j$(nproc) package/compile IGNORE_ERRORS=m || make -j1 V=s package/compile IGNORE_ERRORS=m
+          make -j$(nproc) package/compile IGNORE_ERRORS="n m y" || make -j1 V=s package/compile IGNORE_ERRORS="n m y"
           make package/index
 
       - name: Collect Feed
