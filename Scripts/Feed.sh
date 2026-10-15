@@ -1,5 +1,6 @@
 #!/bin/bash
 # 软件源脚本（在 ./wrt 下运行）：config | collect | firmware | project
+# 固件与软件源出自同一次编译（ALL_KMODS=y），内核 vermagic 天然一致
 set -eo pipefail
 
 # 填 Cloudflare Pages 域名，如 openwrt-feed.pages.dev
@@ -35,11 +36,18 @@ make_index() {
 
 case "$1" in
 config)
-	#平台配置 + 与固件一致的内核/设备参数 + 全部 kmod + 插件清单
-	cat "$CONF_DIR/$WRT_CONFIG.txt" > .config
-	grep -hE '^(# )?CONFIG_(KERNEL_|TARGET_|CCACHE|DEVEL|FEED_)' "$CONF_DIR/GENERAL.txt" >> .config || true
+	#固件与软件源同一次编译：只追加 ALL_KMODS（全部内核模块编成 m，不编进内核）和用户态插件清单
 	echo "CONFIG_ALL_KMODS=y" >> .config
-	if [ "$WRT_FEED_USER" = "true" ]; then normalize_packages >> .config; fi
+	if [ "$WRT_FEED_USER" = "true" ]; then
+		#固件里已经是 =y 的包不再被 PACKAGES.txt 降级成 =m，避免改变固件内容
+		FWY=$(mktemp)
+		{ grep -hoP '^CONFIG_PACKAGE_\K[^=]+(?==y$)' "$CONF_DIR/$WRT_CONFIG.txt" "$CONF_DIR/GENERAL.txt" || true; } | sort -u > "$FWY"
+		normalize_packages | awk '
+			FILENAME == ARGV[1] { y[$0]; next }
+			{ n = $0; sub(/^CONFIG_PACKAGE_/, "", n); sub(/=.*/, "", n); if (!(n in y)) print }
+		' "$FWY" - >> .config
+		rm -f "$FWY"
+	fi
 	;;
 
 collect)
