@@ -96,7 +96,7 @@ jobs:
 
       - name: Verify Kernel Match
         run: |
-          #固件和软件源的内核 vermagic 必须一致，否则 kmod 在设备上装不上
+          #固件和软件源的内核 vermagic 一致性验证
           FAIL=0
           for F in vermagic/*.txt; do
             CFG=$(basename "$F" .txt)
@@ -130,7 +130,6 @@ jobs:
 
       - name: Get Pages Project
         run: |
-          #项目名在 Scripts/Feed.sh 顶部的 FEED_HOST 里设置
           echo "CF_PROJECT=$(bash Scripts/Feed.sh project)" >> "$GITHUB_ENV"
 
       - name: Deploy To Cloudflare Pages
