@@ -59,7 +59,10 @@ collect)
 		ARCH=$(grep -oP '^CONFIG_TARGET_ARCH_PACKAGES="\K[^"]+' .config)
 		UDIR="$OUT/packages/$ARCH"
 		mkdir -p "$UDIR" ./tmp
-		grep -oP '^CONFIG_PACKAGE_\K[^=]+(?==m$)' .config | sort -u > ./tmp/feed-m.txt
+		{
+			grep -oP '^CONFIG_PACKAGE_\K[^=]+(?==m$)' .config || true
+			normalize_packages | grep -oP '^CONFIG_PACKAGE_\K[^=]+(?==m$)' || true
+		} | sort -u > ./tmp/feed-m.txt
 		python3 - ./tmp/feed-m.txt "$APK" "$UDIR" bin/packages/"$ARCH"/*/ <<'PY'
 import json, os, shutil, subprocess, sys
 mfile, apk, dst = sys.argv[1:4]
@@ -115,3 +118,4 @@ project)
 	echo "usage: Feed.sh config|collect|firmware|project"; exit 1
 	;;
 esac
+
