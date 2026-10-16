@@ -1,10 +1,6 @@
 #!/bin/bash
-# 软件源脚本（在 ./wrt 下运行）：config | collect | firmware | project
-# 固件与软件源出自同一次编译（ALL_KMODS=y），内核 vermagic 天然一致
 set -eo pipefail
 
-# 填 Cloudflare Pages 域名，如 openwrt-feed.pages.dev
-# 留空时：固件不写软件源，不推送
 FEED_HOST="openwrt-feeds.pages.dev"
 
 CONF_DIR="$GITHUB_WORKSPACE/Config"
@@ -15,12 +11,10 @@ feed_ready() {
 	[ -n "$FEED_HOST" ]
 }
 
-#去掉 http(s):// 和结尾路径
 feed_host() {
 	local H=${FEED_HOST#http://}; H=${H#https://}; echo "${H%%/*}"
 }
 
-#PACKAGES.txt -> .config 行：y/m 统一成 m，n 保持，CONFIG_ 开头原样，纯包名补成 =m
 normalize_packages() {
 	[ -f "$CONF_DIR/PACKAGES.txt" ] || return 0
 	tr -d '\r' < "$CONF_DIR/PACKAGES.txt" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//' | awk '
@@ -36,10 +30,8 @@ make_index() {
 
 case "$1" in
 config)
-	#固件与软件源同一次编译：只追加 ALL_KMODS（全部内核模块编成 m，不编进内核）和用户态插件清单
 	echo "CONFIG_ALL_KMODS=y" >> .config
 	if [ "$WRT_FEED_USER" = "true" ]; then
-		#固件里已经是 =y 的包不再被 PACKAGES.txt 降级成 =m，避免改变固件内容
 		FWY=$(mktemp)
 		{ grep -hoP '^CONFIG_PACKAGE_\K[^=]+(?==y$)' "$CONF_DIR/$WRT_CONFIG.txt" "$CONF_DIR/GENERAL.txt" || true; } | sort -u > "$FWY"
 		normalize_packages | awk '
@@ -54,7 +46,6 @@ collect)
 	OUT="$GITHUB_WORKSPACE/feed-out"
 	rm -rf "$OUT" && mkdir -p "$OUT"
 
-	#内核模块 + 内核校验值
 	KDIR="$OUT/kmods/$WRT_SUBTARGET"
 	mkdir -p "$KDIR"
 	cp -f bin/targets/*/*/packages/*.apk "$KDIR"/
@@ -64,7 +55,6 @@ collect)
 	make_index "$KDIR"
 	echo "kmods: $(ls "$KDIR"/*.apk | wc -l) packages, vermagic $(cat "$KDIR/vermagic")"
 
-	#用户态插件：只收最终 .config 里 =m 的包，不收固件默认的 y 包
 	if [ "$WRT_FEED_USER" = "true" ]; then
 		ARCH=$(grep -oP '^CONFIG_TARGET_ARCH_PACKAGES="\K[^"]+' .config)
 		UDIR="$OUT/packages/$ARCH"
@@ -118,7 +108,6 @@ LIST
 	;;
 
 project)
-	#Pages 项目名 = 域名第一段
 	if feed_ready; then H=$(feed_host); echo "${H%%.*}"; fi
 	;;
 
@@ -126,4 +115,3 @@ project)
 	echo "usage: Feed.sh config|collect|firmware|project"; exit 1
 	;;
 esac
-
