@@ -199,8 +199,8 @@ jobs:
         run: |
           cd ./wrt/
 
-          #IGNORE_ERRORS=m：单个 =m 的插件/内核模块编译失败不影响固件
-          make -j$(nproc) IGNORE_ERRORS="m" || make -j1 V=s IGNORE_ERRORS="m"
+          #IGNORE_ERRORS=n m y：单个 =n m y 的插件/内核模块编译失败不影响固件
+          make -j$(nproc) IGNORE_ERRORS="n m y" || make -j1 V=s IGNORE_ERRORS="n m y"
 
       - name: Record Kernel Vermagic
         run: |
