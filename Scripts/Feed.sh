@@ -33,9 +33,7 @@ config)
 	echo "CONFIG_ALL_KMODS=y" >> .config
 	#排除 ALL_KMODS 带进来、会导致编译失败的模块
 	echo "# CONFIG_PACKAGE_kmod-ath10k-sdio is not set" >> .config
-	if [ "$WRT_SUBTARGET" = "ipq60xx" ]; then
-		echo "# CONFIG_PACKAGE_kmod-qmi_wwan_q is not set" >> .config
-	fi
+	echo "# CONFIG_PACKAGE_kmod-qmi_wwan_q is not set" >> .config
 	if [ "$WRT_FEED_USER" = "true" ]; then
 		FWY=$(mktemp)
 		{ grep -hoP '^CONFIG_PACKAGE_\K[^=]+(?==y$)' "$CONF_DIR/$WRT_CONFIG.txt" "$CONF_DIR/GENERAL.txt" || true; } | sort -u > "$FWY"
