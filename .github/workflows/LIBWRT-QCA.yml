@@ -31,8 +31,8 @@ jobs:
       #max-parallel: 3
       matrix:
         CONFIG: [IPQ60XX, IPQ807X]
-        SOURCE: [XiaoHaiSly/immortalwrt]
-        BRANCH: [owrt]
+        SOURCE: [XiaoHaiSly/LibWrt]
+        BRANCH: [25.12-nss]
         include:
           #只有一个平台编译用户态插件（同架构通用），其余平台只出内核模块
           - CONFIG: IPQ60XX
@@ -48,9 +48,9 @@ jobs:
       #默认主题
       WRT_THEME: argon
       #默认主机名
-      WRT_NAME: ImmortalWRT
+      WRT_NAME: LibWrt
       #默认WIFI名称
-      WRT_SSID: ImmortalWRT
+      WRT_SSID: LibWrt
       #默认WIFI密码
       WRT_WORD: 12345678
       #默认地址
