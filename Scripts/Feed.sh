@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eo pipefail
 
-FEED_HOST="openwrt-feeds.pages.dev"
+FEED_HOST="libwrt-feeds.pages.dev"
 
 CONF_DIR="$GITHUB_WORKSPACE/Config"
 TOP="$PWD"
