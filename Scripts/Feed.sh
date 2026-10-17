@@ -31,6 +31,11 @@ make_index() {
 case "$1" in
 config)
 	echo "CONFIG_ALL_KMODS=y" >> .config
+	#排除 ALL_KMODS 带进来、会导致编译失败的模块（须写在 ALL_KMODS 之后，显式 is not set 才能覆盖其默认值）
+	#kmod-rmnet：疑似导致 qca-nss-ecm 链接缺少 nss_rmnet_rx_get_ifnum
+	#kmod-ath10k-sdio：backports-6.18 的 ath10k sdio.c 与 6.12 内核不兼容，且 ipq60xx/ipq807x 用不到
+	echo "# CONFIG_PACKAGE_kmod-rmnet is not set" >> .config
+	echo "# CONFIG_PACKAGE_kmod-ath10k-sdio is not set" >> .config
 	if [ "$WRT_FEED_USER" = "true" ]; then
 		FWY=$(mktemp)
 		{ grep -hoP '^CONFIG_PACKAGE_\K[^=]+(?==y$)' "$CONF_DIR/$WRT_CONFIG.txt" "$CONF_DIR/GENERAL.txt" || true; } | sort -u > "$FWY"
